@@ -46,7 +46,7 @@ public class CharacterViewModel: IdentifiableHashable, ObservableObject {
     @Published var description: String
     @Published var artwork: ArtworkViewModel?
     
-    init(model: Character) {
+    public init(model: Character) {
         name = model.name ?? "no name provided"
         description = model.characterDescription
         artwork = ArtworkViewModel(artWork: model.thumbnail)

@@ -9,6 +9,11 @@ import Foundation
 
 public class MarvelService: GenericAPI {
     
+    struct Keys {
+        static var privateKey: String = ""
+        static var publicKey: String = ""
+    }
+    
     lazy var offset = 0
     lazy var total = 0
     lazy var limit = 20
@@ -29,8 +34,10 @@ public class MarvelService: GenericAPI {
         self.session = URLSession(configuration: configuration)
     }
     
-    public convenience init() {
+    public convenience init(privateKey: String, publicKey: String) {
         self.init(configuration: .default)
+        Keys.privateKey = privateKey
+        Keys.publicKey = publicKey
     }
     
     public func getParameters() -> String {

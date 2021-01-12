@@ -1,0 +1,71 @@
+//
+//  GenericAPI.swift
+//  MarvelClient
+//
+//  Created by James Rochabrun on 1/11/21.
+//
+
+import UIKit
+
+public protocol GenericAPI {
+    
+    var session: URLSession { get }
+    func fetch<T: Decodable>(with request: URLRequest, decode: @escaping (Decodable) -> T?, completion: @escaping (Result<T, APIError>) -> Void)
+}
+
+public extension GenericAPI {
+    
+    typealias JSONTaskCompletionHandler = (Decodable?, APIError?) -> Void
+    
+    private func decodingTask<T: Decodable>(with request: URLRequest, decodingType: T.Type, completionHandler completion: @escaping JSONTaskCompletionHandler) -> URLSessionDataTask {
+        
+        let task = session.dataTask(with: request) { data, response, error in
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                completion(nil, .requestFailed(description: error.debugDescription))
+                return
+            }
+            if httpResponse.statusCode == 200 {
+                if let data = data {
+                    do {
+                        let decoder = JSONDecoder()
+                        decoder.keyDecodingStrategy = .convertFromSnakeCase
+                        let genericModel = try decoder.decode(T.self, from: data)
+                        completion(genericModel, nil)
+                    } catch let error {
+                        completion(nil, .jsonConversionFailure(description: error.localizedDescription))
+                    }
+                } else {
+                    completion(nil, .invalidData)
+                }
+            } else {
+                completion(nil, .responseUnsuccessful(description: "status code = \(httpResponse.statusCode)"))
+            }
+        }
+        return task
+    }
+    
+    func fetch<T: Decodable>(with request: URLRequest, decode: @escaping (Decodable) -> T?, completion: @escaping (Result<T, APIError>) -> Void) {
+        
+        let task = decodingTask(with: request, decodingType: T.self) { (json , error) in
+            
+            //MARK: change to main queue
+            DispatchQueue.main.async {
+                guard let json = json else {
+                    if let error = error {
+                        completion(Result.failure(error))
+                    } else {
+                        completion(Result.failure(.invalidData))
+                    }
+                    return
+                }
+                if let value = decode(json) {
+                    completion(.success(value))
+                } else {
+                    completion(.failure(.jsonParsingFailure))
+                }
+            }
+        }
+        task.resume()
+    }
+}

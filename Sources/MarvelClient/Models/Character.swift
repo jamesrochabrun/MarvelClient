@@ -42,9 +42,9 @@ public class CharacterViewModel: IdentifiableHashable, ObservableObject {
 
     public let id = UUID()
 
-    @Published var name: String
-    @Published var description: String
-    @Published var artwork: ArtworkViewModel?
+    @Published public var name: String
+    @Published public var description: String
+    @Published public var artwork: ArtworkViewModel?
     
     public init(model: Character) {
         name = model.name ?? "no name provided"

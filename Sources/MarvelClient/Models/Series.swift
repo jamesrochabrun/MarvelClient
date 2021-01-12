@@ -8,6 +8,6 @@
 import Foundation
 
 public struct Series: Decodable {
-    let available: Int
-    let collectionURI: URL
+    public let available: Int
+    public let collectionURI: URL
 }

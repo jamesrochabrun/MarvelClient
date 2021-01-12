@@ -20,8 +20,8 @@ public struct Artwork: Decodable {
 public class ArtworkViewModel: IdentifiableHashable, ObservableObject {
     
     public let id = UUID()
-    @Published var path: String
-    @Published var extensionType: String
+    @Published public var path: String
+    @Published public var extensionType: String
     
     public init?(artWork: Artwork?) {
         guard
@@ -33,9 +33,7 @@ public class ArtworkViewModel: IdentifiableHashable, ObservableObject {
     }
     
     public func imagePathFor(variant: ImageVariant) -> String {
-        let uri = "\(path)/\(variant.rawValue).\(extensionType)"
-        print(uri)
-        return uri
+        "\(path)/\(variant.rawValue).\(extensionType)"
     }
 }
 

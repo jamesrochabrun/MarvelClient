@@ -8,15 +8,15 @@
 import Foundation
 
 public struct Serie: Decodable {
-    let title: String
-    let thumbnail: Artwork
+    public let title: String
+    public let thumbnail: Artwork
 }
 
 public class SerieViewModel: IdentifiableHashable, ObservableObject {
     
     public let id = UUID()
-    @Published var title: String
-    @Published var artwork: ArtworkViewModel
+    @Published public var title: String
+    @Published public var artwork: ArtworkViewModel
     
     public init(model: Serie) {
         self.title = model.title

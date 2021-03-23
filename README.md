@@ -1,3 +1,3 @@
 # MarvelClient
 
-A description of this package.
+A Generic API Client for the Marvel API

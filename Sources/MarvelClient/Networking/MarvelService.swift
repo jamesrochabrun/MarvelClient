@@ -14,9 +14,8 @@ public class MarvelService: GenericAPI {
         static var publicKey: String = ""
     }
     
-    public lazy var offset = 0
-    public lazy var total = 0
-    public lazy var limit = 20
+    lazy var offset = 0
+    lazy var limit = 20
     public var session: URLSession
     
     private func timestamp() -> String {
@@ -44,17 +43,17 @@ public class MarvelService: GenericAPI {
          parameters
     }
     
-    internal func url(withPath path: String) -> URL? {
+    internal func url(withPath path: String, offset: Int = 0, limit: Int = 20) -> URL? {
          URL(string:
                 Service.base + path + parameters + "&" + ServiceParameters.offset + "=" + "\(offset)"
                 + "&" + ServiceParameters.limit + "=" + "\(limit)")
     }
     
-    public func fetch<Data: DataProtocol>(_ data: Data.Type, completion: @escaping (Result<[Data.DataResource.Model], APIError>) -> Void) {
+    public func fetch<Data: DataProtocol>(_ data: Data.Type, offset: Int = 0, limit: Int = 20, completion: @escaping (Result<[Data.DataResource.Model], APIError>) -> Void) {
         
         guard
             let marvelResource = MarvelResources(T: data.DataResource),
-            let url = url(withPath: marvelResource.rawValue) else { return }
+            let url = url(withPath: marvelResource.rawValue, offset: offset, limit: limit) else { return }
         let request = URLRequest(url: url)
         fetch(with: request) {
             $0 as? Data

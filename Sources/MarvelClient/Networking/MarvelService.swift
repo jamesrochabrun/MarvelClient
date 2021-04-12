@@ -14,9 +14,9 @@ public class MarvelService: GenericAPI {
         static var publicKey: String = ""
     }
     
-    lazy var offset = 0
-    lazy var total = 0
-    lazy var limit = 20
+    public lazy var offset = 0
+    public lazy var total = 0
+    public lazy var limit = 20
     public var session: URLSession
     
     private func timestamp() -> String {
